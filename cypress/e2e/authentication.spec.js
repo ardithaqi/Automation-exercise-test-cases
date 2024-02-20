@@ -88,7 +88,7 @@ describe('User Registration and Account Management', () => {
         });
     })
 
-    it.only('Login user with incorrect email and password', ()=>{
+    it('Login user with incorrect email and password', ()=>{
     
         // Navigate to the signup page
         cy.get('[class="nav navbar-nav"]').contains(/Signup/i).click();
@@ -101,5 +101,26 @@ describe('User Registration and Account Management', () => {
 
         //Ensure that user entered incorrect email and password and its visible.
         cy.contains(/Your email or password is incorrect!/i).should('be.visible')
+    })
+
+    it.only('Logout user', ()=>{
+
+        // Navigate to the signup page
+        cy.fixture('userDetails.json').then((userDetails)=>{
+        cy.get('[class="nav navbar-nav"]').contains(/Signup/i).click();
+        cy.contains(/Login to your account/i).should('be.visible')
+
+        //Login with correct details
+        cy.getDataQa('login-email').type(email)
+        cy.getDataQa('login-password').type(password)
+        cy.getDataQa('login-button').click();
+
+        //Ensure that you are logged in with the correct details and its visible
+        cy.contains(`Logged in as ${userDetails.username}`).should('be.visible')
+        
+        //Logout from the page
+        cy.get('[class="nav navbar-nav"]').contains(/Logout/i).click();
+        cy.location('pathname').should('equal', '/login')
+        })
     })
 })
