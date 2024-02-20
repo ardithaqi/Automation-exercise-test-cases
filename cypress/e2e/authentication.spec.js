@@ -2,13 +2,16 @@ describe('User Registration and Account Management', () => {
     const email = Cypress.env('email');
     const password = Cypress.env('password');
 
+    beforeEach('Navigate to automationexercie.com site and validate', ()=>{
+        // Visit the website under test
+        cy.visit('https://www.automationexercise.com/');
+        cy.location('pathname').should('equal', '/');
+    })
+
     it('Registers a new user, logs in, deletes the account, and logs out', () => {
         // Load user details from a JSON fixture file
         cy.fixture('userDetails.json').then((userDetails) => {
-            // Visit the website under test
-            cy.visit('https://www.automationexercise.com/');
-            cy.location('pathname').should('equal', '/');
-
+        
             // Navigate to the signup page
             cy.get('[class="nav navbar-nav"]').contains(/Signup/i).click();
             cy.location('pathname').should('equal', '/login');
@@ -56,10 +59,31 @@ describe('User Registration and Account Management', () => {
             // Log out the user
             cy.contains(`Logged in as ${userDetails.username}`);
 
-            cy.get('[class="nav navbar-nav"]').contains(/Delete Account/i).click();
-            // Ensure that the "Account Deleted!" text is visible on the page
+            // cy.get('[class="nav navbar-nav"]').contains(/Delete Account/i).click();
+            // // Ensure that the "Account Deleted!" text is visible on the page
+            // cy.contains(/Account Deleted!/i).should('be.visible');
+            // cy.getDataQa('continue-button').click();
+        });
+    });
+
+    it.only('Login User with correct email and password', ()=>{
+
+        cy.fixture('userDetails.json').then((userDetails)=>{
+        cy.get('[class="nav navbar-nav"]').contains(/Signup/i).click();
+        cy.contains(/Login to your account/i).should('be.visible')
+
+        //Login with correct details
+        cy.getDataQa('login-email').type(email)
+        cy.getDataQa('login-password').type(password)
+        cy.getDataQa('login-button').click();
+
+        //Ensure that you are logged in with the correct details and its visible
+        cy.contains(`Logged in as ${userDetails.username}`).should('be.visible')
+        
+        cy.get('[class="nav navbar-nav"]').contains(/Delete Account/i).click();
+            // // Ensure that the "Account Deleted!" text is visible on the page
             cy.contains(/Account Deleted!/i).should('be.visible');
             cy.getDataQa('continue-button').click();
         });
-    });
-});
+    })
+})
