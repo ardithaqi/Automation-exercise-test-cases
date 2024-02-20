@@ -118,7 +118,7 @@ describe('User Registration and Account Management', () => {
         //Ensure that you are logged in with the correct details and its visible
         cy.contains(`Logged in as ${userDetails.username}`).should('be.visible')
         
-        //Logout from the page
+        //Logout from the website
         cy.get('[class="nav navbar-nav"]').contains(/Logout/i).click();
         cy.location('pathname').should('equal', '/login')
         })
