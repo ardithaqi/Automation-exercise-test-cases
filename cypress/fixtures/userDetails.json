@@ -1,0 +1,15 @@
+{
+    "first_name": "Ardi",
+    "last_name": "Test",
+    "username": "arditest",
+    "day": "1",
+    "month": "January",
+    "year": "2000",
+    "company": "Test",
+    "address": "Somewhere in the States",
+    "country": "United States",
+    "state": "New York",
+    "city": "New York",
+    "zipcode": "10005",
+    "phoneNumber": "1234567890"
+}
