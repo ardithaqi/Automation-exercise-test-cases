@@ -66,8 +66,9 @@ describe('User Registration and Account Management', () => {
         });
     });
 
-    it.only('Login User with correct email and password', ()=>{
+    it('Login user with correct email and password', ()=>{
 
+        // Navigate to the signup page
         cy.fixture('userDetails.json').then((userDetails)=>{
         cy.get('[class="nav navbar-nav"]').contains(/Signup/i).click();
         cy.contains(/Login to your account/i).should('be.visible')
@@ -85,5 +86,20 @@ describe('User Registration and Account Management', () => {
             cy.contains(/Account Deleted!/i).should('be.visible');
             cy.getDataQa('continue-button').click();
         });
+    })
+
+    it.only('Login user with incorrect email and password', ()=>{
+    
+        // Navigate to the signup page
+        cy.get('[class="nav navbar-nav"]').contains(/Signup/i).click();
+        cy.contains(/Login to your account/i).should('be.visible')
+        
+        //Login with incorrect details
+        cy.getDataQa('login-email').type('ardi111@gmail.com')
+        cy.getDataQa('login-password').type('ardiardi')
+        cy.getDataQa('login-button').click();
+
+        //Ensure that user entered incorrect email and password and its visible.
+        cy.contains(/Your email or password is incorrect!/i).should('be.visible')
     })
 })
