@@ -63,7 +63,7 @@ describe('Product Managment', ()=>{
         })
     })
 
-    it.only('Verify product quantity in cart',()=>{
+    it('Verify product quantity in cart',()=>{
         cy.get('[class="nav nav-pills nav-justified"]').eq(0).find('a').click();
         cy.location('pathname').should('equal', '/product_details/1')
 
