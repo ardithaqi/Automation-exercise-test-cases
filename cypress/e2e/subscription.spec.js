@@ -4,10 +4,15 @@ describe('Verify subscription', ()=>{
         cy.visit('http://automationexercise.com')
         cy.location('pathname').should('equal', '/')
     })
+
     it('Verify subscription in home page',()=>{
         
         cy.get('footer').scrollIntoView();
+
+        //Ensure that the subscription text is visible
         cy.contains(/Subscription/i).should('be.visible')
+
+        //Add the details 
         cy.get('form').then((form)=>{
             cy.wrap(form).find('[type="email"]').type('arditest@gmail.com')
             cy.wrap(form).find('button').click();
@@ -18,9 +23,12 @@ describe('Verify subscription', ()=>{
 
     it('Verify subscription in cart page', ()=>{
 
+        //Navigate to the cart page
         cy.get('[class="nav navbar-nav"]').find('li').contains(/Cart/i).click();
 
         cy.get('footer').scrollIntoView();
+        
+        //Ensure that the subscription text is visible
         cy.contains(/Subscription/i).should('be.visible')
         cy.get('form').then((form)=>{
             cy.wrap(form).find('[type="email"]').type('arditest@gmail.com')
