@@ -63,4 +63,18 @@ describe('Product Managment', ()=>{
         })
     })
 
+    it.only('Verify product quantity in cart',()=>{
+        cy.get('[class="nav nav-pills nav-justified"]').eq(0).find('a').click();
+        cy.location('pathname').should('equal', '/product_details/1')
+
+        cy.get('.product-information').find('span').then((product=>{
+            cy.wrap(product).find('input').eq(0).clear().type('4')
+            cy.wrap(product).find('button').click();
+        }))
+
+        cy.get('.modal-content').find('a').click();
+        cy.get('#product-1').find('td').then((firstProduct)=>{
+            cy.wrap(firstProduct).eq(3).find('button').invoke('text').should('contain', '4')
+        })
+    })
 })
