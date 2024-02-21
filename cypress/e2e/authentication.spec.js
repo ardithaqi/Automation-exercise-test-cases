@@ -141,7 +141,7 @@ describe('User Registration and Account Management', () => {
         })
     })
 
-    it.only('Contact us form',()=>{
+    it('Contact us form',()=>{
         
         //Navigate to contact us form
         cy.fixture('userDetails.json').then((userDetails)=>{
@@ -170,4 +170,9 @@ describe('User Registration and Account Management', () => {
         cy.location('pathname').should('equal', '/')
         })
     })
+
+    // it('Verify tese case page', ()=>{
+    //     cy.get('[class="test_cases_list"]').find('button').contains(/Test cases/i).click();
+    //     cy.location('pathname').should('equal', '/test_cases')
+    // })
 })
