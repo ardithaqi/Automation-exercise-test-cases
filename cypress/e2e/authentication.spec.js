@@ -70,7 +70,7 @@ describe('User Registration and Account Management', () => {
 
         // Navigate to the signup page
         cy.fixture('userDetails.json').then((userDetails)=>{
-        cy.get('[class="nav navbar-nav"]').contains(/Signup/i).click();
+        cy.get('[class="nav navbar-nav"]').contains(/Login/i).click();
         cy.contains(/Login to your account/i).should('be.visible')
 
         //Login with correct details
@@ -91,7 +91,7 @@ describe('User Registration and Account Management', () => {
     it('Login user with incorrect email and password', ()=>{
     
         // Navigate to the signup page
-        cy.get('[class="nav navbar-nav"]').contains(/Signup/i).click();
+        cy.get('[class="nav navbar-nav"]').contains(/Login/i).click();
         cy.contains(/Login to your account/i).should('be.visible')
         
         //Login with incorrect details
@@ -103,11 +103,11 @@ describe('User Registration and Account Management', () => {
         cy.contains(/Your email or password is incorrect!/i).should('be.visible')
     })
 
-    it.only('Logout user', ()=>{
+    it('Logout user', ()=>{
 
-        // Navigate to the signup page
+        // Navigate to the login page
         cy.fixture('userDetails.json').then((userDetails)=>{
-        cy.get('[class="nav navbar-nav"]').contains(/Signup/i).click();
+        cy.get('[class="nav navbar-nav"]').contains(/Login/i).click();
         cy.contains(/Login to your account/i).should('be.visible')
 
         //Login with correct details
@@ -121,6 +121,53 @@ describe('User Registration and Account Management', () => {
         //Logout from the website
         cy.get('[class="nav navbar-nav"]').contains(/Logout/i).click();
         cy.location('pathname').should('equal', '/login')
+        })
+    })
+
+    it('Register with already existing email',()=>{
+
+        // Navigate to the signup page
+        cy.fixture('userDetails.json').then((userDetails)=>{
+            cy.get('[class="nav navbar-nav"]').contains(/Signup/i).click();
+            cy.contains(/Login to your account/i).should('be.visible')
+
+            //Register with already existing email
+            cy.getDataQa('signup-name').type(userDetails.username);
+            cy.getDataQa('signup-email').type(email);
+            cy.getDataQa('signup-button').click();
+
+            //Ensure that user is already an existing email
+            cy.contains(/Email Address already exist!/i).should('be.visible')
+        })
+    })
+
+    it.only('Contact us form',()=>{
+        
+        //Navigate to contact us form
+        cy.fixture('userDetails.json').then((userDetails)=>{
+            cy.get('[class="nav navbar-nav"]').contains(/Contact Us/i).click();
+            cy.contains(/Get in touch/i).should('be.visible')
+    
+            //Fill in name, email, subject and message
+            cy.getDataQa('name').type(userDetails.first_name);
+            cy.getDataQa('email').type(email)
+            cy.getDataQa('subject').type(userDetails.subject)
+            cy.getDataQa('message').type(userDetails.message)
+
+            //Uploading a file thats located in the fixture folder
+            cy.get('[name="upload_file"]').attachFile('Bazat e robotikës T2V.docx');
+
+            //Submitting the informations
+            cy.getDataQa('submit-button').click();
+            cy.on('window:alert', message => {
+                // Check the alert message
+                expect(message).to.equal('Press OK to proceed!');
+              });
+
+        //Ensure that the submit was succesful
+        cy.contains(/Success! Your details have been submitted successfully./i).should('be.visible')
+        cy.get('[class="btn btn-success"]').click();
+        cy.location('pathname').should('equal', '/')
         })
     })
 })
