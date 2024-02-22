@@ -15,5 +15,12 @@
 
 
     "subject": "Cypress is amazing",
-    "message": "Cypress felt very friendly and easy to learn"
+    "message": "Cypress felt very friendly and easy to learn",
+
+
+    "cardName": "Ardi Test",
+    "cardNumber": "123456789101112131415",
+    "cvc": "123",
+    "expireMonth":"06",
+    "expireYear": "2040"
 }
