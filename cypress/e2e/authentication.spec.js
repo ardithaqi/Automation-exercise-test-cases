@@ -56,8 +56,8 @@ describe('User Registration and Account Management', () => {
             cy.contains(/Account Created!/i).should('be.visible');
             cy.getDataQa('continue-button').click();
 
-            // Log out the user
-            cy.contains(`Logged in as ${userDetails.username}`);
+            // Verify that the correct user has been logged in
+            cy.contains(`Logged in as ${userDetails.username}`)
 
             // cy.get('[class="nav navbar-nav"]').contains(/Delete Account/i).click();
             // // Ensure that the "Account Deleted!" text is visible on the page
