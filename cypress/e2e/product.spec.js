@@ -351,7 +351,7 @@ describe('Product Managment', ()=>{
 
     })
 
-    it.only('Place Order: Login before Checkout', ()=>{
+    it('Place Order: Login before Checkout', ()=>{
         // Navigate to the signup page
         cy.fixture('userDetails.json').then((userDetails)=>{
            cy.get('[class="nav navbar-nav"]').contains(/Login/i).click();
@@ -446,6 +446,46 @@ describe('Product Managment', ()=>{
                cy.getDataQa('continue-button').click();
            });
            
+    })
+
+    it('Remove Products From Cart',()=>{
+        //Navigate to products page
+        cy.get('[class="nav navbar-nav"]').find('li').contains(/Products/i).click();
+
+        //Add first product
+        cy.get('.single-products').eq(0).then((firstProduct)=>{
+           cy.wrap(firstProduct).trigger('mouseover')
+           cy.wrap(firstProduct).find('a').eq(0).click();
+        })
+        //Continue shopping
+        cy.get('.modal-content').find('button').click();
+
+        //Add second product
+        cy.get('.single-products').eq(1).then((firstProduct)=>{
+            cy.wrap(firstProduct).trigger('mouseover')
+            cy.wrap(firstProduct).find('a').eq(0).click();
+         })
+        cy.get('.modal-content').find('a').click();
+
+        //Verify two products have been added to the cart
+         cy.get('tbody').find('tr').should('have.length', 2)
+
+        //Verify that cart page is displayed
+         cy.location('pathname').should('equal', '/view_cart')
+
+         //Remove one product from cart
+         cy.get('.cart_quantity_delete').eq(0).click();
+
+         //Verify one product is in the cart
+         cy.get('tbody').find('tr').should('have.length', 1)
+
+         //Remove last product from cart
+         cy.get('.cart_quantity_delete').eq(0).click();
+
+         //Verify that the cart is empty
+         cy.get('#empty_cart').find('b').invoke('text').should('equal' ,'Cart is empty!')
+
+         
     })
 
 })
