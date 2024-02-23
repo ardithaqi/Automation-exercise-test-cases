@@ -8,7 +8,7 @@ describe('User Registration and Account Management', () => {
         cy.location('pathname').should('equal', '/');
     })
 
-    it('Registers a new user, logs in, deletes the account, and logs out', () => {
+    it('Registers a new user, logs in, deletes the account', () => {
         // Load user details from a JSON fixture file
         cy.fixture('userDetails.json').then((userDetails) => {
         

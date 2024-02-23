@@ -194,6 +194,8 @@ describe('Product Managment', ()=>{
 
             //Leaving a comment
             cy.get('#ordermsg').find('textarea').type('Text me before shipping them to me!')
+
+            //Checkout
             cy.get('[class="btn btn-default check_out"]').click();
 
             //Enter payment details: Name on Card, Card Number, CVC, Expiration date
@@ -216,7 +218,7 @@ describe('Product Managment', ()=>{
 
     })
 
-    it.only('Place order: Register before checkout',()=>{
+    it('Place order: Register before checkout',()=>{
         // Load user details from a JSON fixture file
         cy.fixture('userDetails.json').then((userDetails) => {
         
@@ -324,6 +326,8 @@ describe('Product Managment', ()=>{
 
             //Leaving a comment
             cy.get('#ordermsg').find('textarea').type('Text me before shipping them to me!')
+            
+            //Checkout
             cy.get('[class="btn btn-default check_out"]').click();
 
              //Enter payment details: Name on Card, Card Number, CVC, Expiration date
@@ -345,6 +349,103 @@ describe('Product Managment', ()=>{
 
         })
 
+    })
+
+    it.only('Place Order: Login before Checkout', ()=>{
+        // Navigate to the signup page
+        cy.fixture('userDetails.json').then((userDetails)=>{
+           cy.get('[class="nav navbar-nav"]').contains(/Login/i).click();
+           cy.contains(/Login to your account/i).should('be.visible')
+
+           //Login with correct details
+           cy.getDataQa('login-email').type(email)
+           cy.getDataQa('login-password').type(password)
+           cy.getDataQa('login-button').click();
+
+           //Ensure that you are logged in with the correct details and its visible
+           cy.contains(`Logged in as ${userDetails.username}`).should('be.visible')
+           
+           //Navigate to Products
+           cy.get('[class="nav navbar-nav"]').find('li').contains(/Products/i).click();
+    
+           //Add first product
+           cy.get('.single-products').eq(0).then((firstProduct)=>{
+              cy.wrap(firstProduct).trigger('mouseover')
+              cy.wrap(firstProduct).find('a').eq(0).click();
+           })
+           //Continue shopping
+           cy.get('.modal-content').find('button').click();
+   
+           //Add second product
+           cy.get('.single-products').eq(1).then((firstProduct)=>{
+               cy.wrap(firstProduct).trigger('mouseover')
+               cy.wrap(firstProduct).find('a').eq(0).click();
+            })
+           cy.get('.modal-content').find('a').click();
+   
+           //Verify that cart page is displayed
+           cy.location('pathname').should('equal', '/view_cart')
+   
+           //Checkout
+           cy.get('[class="btn btn-default check_out"]').click();
+
+            //Verify address
+            cy.getDataQa('checkout-info').find('ul').eq(0).then((address=>{
+                cy.wrap(address).find('li').eq(1).invoke('text').should('contain', `Mr. ${userDetails.first_name} ${userDetails.last_name}`)
+                cy.wrap(address).find('li').eq(2).invoke('text').should('contain', `${userDetails.company}`)
+                cy.wrap(address).find('li').eq(3).invoke('text').should('contain', `${userDetails.address}`)
+                cy.wrap(address)
+                .find('li')
+                .eq(5)
+                .invoke('text')
+                .then((text) => {
+                  const cleanedText = text.trim().replace(/\s+/g, ' '); // Remove leading/trailing spaces and multiple spaces
+                  const expectedText = `${userDetails.city} ${userDetails.state} ${userDetails.zipcode}`;
+                  expect(cleanedText).to.contain(expectedText);
+                });
+              
+                cy.wrap(address).find('li').eq(6).invoke('text').should('contain', `${userDetails.country}`)
+                cy.wrap(address).find('li').eq(7).invoke('text').should('contain', `${userDetails.phoneNumber}`)
+            }))
+
+             //Verify order
+                cy.get('#product-1').find('td').then((firstProduct)=>{
+                cy.wrap(firstProduct).eq(2).find('p').invoke('text').should('contain', '500')
+                cy.wrap(firstProduct).eq(3).find('button').invoke('text').should('contain', '1')
+                cy.wrap(firstProduct).eq(4).find('p').invoke('text').should('contain', '500')
+
+             })
+                cy.get('#product-2').find('td').then((secondProduct)=>{
+                cy.wrap(secondProduct).eq(2).find('p').invoke('text').should('contain', '400')
+                cy.wrap(secondProduct).eq(3).find('button').invoke('text').should('contain', '1')
+                cy.wrap(secondProduct).eq(4).find('p').invoke('text').should('contain', '400')
+
+            })
+
+            //Leaving a comment
+            cy.get('#ordermsg').find('textarea').type('Text me before shipping them to me!')
+
+            //Checkout
+            cy.get('[class="btn btn-default check_out"]').click();
+
+            //Enter payment details: Name on Card, Card Number, CVC, Expiration date
+            cy.getDataQa('name-on-card').type(userDetails.cardName)
+            cy.getDataQa('card-number').type(userDetails.cardNumber)
+            cy.getDataQa('cvc').type(userDetails.cvc)
+            cy.getDataQa('expiry-month').type(userDetails.expireMonth)
+            cy.getDataQa('expiry-year').type(userDetails.expireYear)
+
+            cy.getDataQa('pay-button').click();
+
+            //Verify success message 'Your order has been placed successfully!'
+            cy.get('.container').find('p').invoke('text').should('contain', 'Congratulations! Your order has been confirmed!')
+
+           cy.get('[class="nav navbar-nav"]').contains(/Delete Account/i).click();
+               // // Ensure that the "Account Deleted!" text is visible on the page
+               cy.contains(/Account Deleted!/i).should('be.visible');
+               cy.getDataQa('continue-button').click();
+           });
+           
     })
 
 })
