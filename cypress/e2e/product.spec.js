@@ -488,7 +488,7 @@ describe('Product Managment', ()=>{
          
     })
 
-    it.only('View Category Products',()=>{
+    it('View Category Products',()=>{
        
         //Verify that the category is visible
         cy.contains('Category').should('be.visible')  
@@ -515,6 +515,28 @@ describe('Product Managment', ()=>{
         //Verify that category page is displayed and confirm text 'MEN - TSHIRTS PRODUCTS'
         cy.location('pathname').should('equal', '/category_products/3')
         cy.contains(/MEN - TSHIRTS PRODUCTS/i).should('be.visible')
+    })
+
+    it.only('View & Cart Brand Products',()=>{
+        cy.get('[class="nav navbar-nav"]').contains(/products/i).click();
+
+         //Verify that the brands is visible
+         cy.contains('Brands').should('be.visible')  
+
+         //Find a brand category 
+         cy.get('.brands-name').find('ul li').contains('Polo').click();
+
+         //Verify the selected brand
+         cy.location('pathname').should('equal', '/brand_products/Polo')
+         cy.contains(/BRAND - POLO PRODUCTS/i).should('be.visible')
+
+         //Find a brand category
+         cy.get('.brands-name').find('ul li').contains('H&M').click();
+
+         //Verify the selected brand
+         cy.location('pathname').should('equal', '/brand_products/H&M')
+         cy.contains(/BRAND - H&M PRODUCTS/i).should('be.visible')
+
     })
 
 })
