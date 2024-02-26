@@ -488,4 +488,33 @@ describe('Product Managment', ()=>{
          
     })
 
+    it.only('View Category Products',()=>{
+       
+        //Verify that the category is visible
+        cy.contains('Category').should('be.visible')  
+
+        //Find the category for women and choose a subcategory
+        cy.get('#accordian').scrollIntoView().within(()=>{
+            cy.get('div').eq(0).click();
+            cy.get('#Women').find('ul li').contains('Dress').click({force:true});
+        })
+
+        //Verify that category page is displayed and confirm text 'WOMEN - TOPS PRODUCTS'
+        cy.location('pathname').should('equal', '/category_products/1')
+        cy.contains(/Women - Dress Products/i).should('be.visible')
+
+        //Verify that the category is visible
+        cy.contains('Category').should('be.visible')  
+        
+        //Find the category for women and choose a subcategory
+        cy.get('#accordian').scrollIntoView().within(()=>{
+            cy.get('div').eq(1).click();
+            cy.get('#Men').find('ul li').contains('Tshirts').click({force:true});
+        })
+
+        //Verify that category page is displayed and confirm text 'MEN - TSHIRTS PRODUCTS'
+        cy.location('pathname').should('equal', '/category_products/3')
+        cy.contains(/MEN - TSHIRTS PRODUCTS/i).should('be.visible')
+    })
+
 })
