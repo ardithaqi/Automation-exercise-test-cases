@@ -7,6 +7,7 @@ describe('Verify subscription', ()=>{
 
     it('Verify subscription in home page',()=>{
         
+        //Scroll into footer view
         cy.get('footer').scrollIntoView();
 
         //Ensure that the subscription text is visible
@@ -18,6 +19,7 @@ describe('Verify subscription', ()=>{
             cy.wrap(form).find('button').click();
         })
 
+        //Verify the subscribtion
         cy.get('[class="alert-success alert"]').invoke('text').should('equal', 'You have been successfully subscribed!')
     })
 
@@ -35,8 +37,13 @@ describe('Verify subscription', ()=>{
             cy.wrap(form).find('button').click();
         })
 
+        //Verify the subscribtion
         cy.contains(/You have been successfully subscribed!/i).should('be.visible')
     })
 
+    it.only('Verify Test cases page', ()=>{
+        cy.get('.test_cases_list').eq(0).find('button').click();
+        cy.location('pathname').should('equal', '/test_cases')
+    })
     
 })

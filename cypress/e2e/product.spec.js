@@ -8,11 +8,33 @@ describe('Product Managment', ()=>{
     })
     
     // Tests related to product browsing and management
+    it.only('Verify All Products and product detail page',()=>{
+
+        //Navigate to products page
+        cy.get('[class="nav navbar-nav"]').find('li').contains(/Products/i).click();
+        cy.location('pathname').should('equal', '/products')
+        cy.contains(/ALL PRODUCTS/i).should('be.visible')
+
+        cy.get('.features_items').find('.col-sm-4').should('be.visible')
+
+        //Click on 'View Product' button
+        cy.get('.choose').eq(0).find('a').click();
+        cy.get('[class="nav nav-tabs"]').contains(/Write your review/i).should('be.visible')
+
+        cy.get('.product-information').then((productInfo=>{
+            cy.wrap(productInfo).find('h2').should('contain', 'Blue Top')
+            cy.wrap(productInfo).find('p').should('contain', 'Category: Women > Tops')
+            cy.wrap(productInfo).find('span span').should('contain', 'Rs. 500')
+            cy.wrap(productInfo).find('p b').eq(0).should('contain', 'Availability:')
+            cy.wrap(productInfo).find('p b').eq(1).should('contain', 'Condition:')
+        }))
+
+
+    })
     it('Searching a product and visibility',()=>{
 
         //Navigate to products page
         cy.get('[class="nav navbar-nav"]').find('li').contains(/Products/i).click();
-
         cy.location('pathname').should('equal', '/products')
 
         //Search for 'Jeans' and submit
@@ -615,7 +637,7 @@ describe('Product Managment', ()=>{
         }))
     })
 
-    it.only('Add to cart from Recommended items', ()=>{
+    it('Add to cart from Recommended items', ()=>{
 
         //Scroll to the bottom of the page
         cy.scrollTo('bottom');
