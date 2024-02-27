@@ -8,7 +8,7 @@ describe('Product Managment', ()=>{
     })
     
     // Tests related to product browsing and management
-    it.only('Verify All Products and product detail page',()=>{
+    it('Verify All Products and product detail page',()=>{
 
         //Navigate to products page
         cy.get('[class="nav navbar-nav"]').find('li').contains(/Products/i).click();
@@ -31,6 +31,7 @@ describe('Product Managment', ()=>{
 
 
     })
+
     it('Searching a product and visibility',()=>{
 
         //Navigate to products page
@@ -235,8 +236,9 @@ describe('Product Managment', ()=>{
             cy.getDataQa('pay-button').click();
 
             //Verify success message 'Your order has been placed successfully!'
-            cy.get('.container').find('p').should('contain', /Congratulations! Your order has been confirmed!/i)
+            cy.get('.container').find('p').eq(0).invoke('text').should('contain', 'Congratulations! Your order has been confirmed!')
 
+            //Delete the account
             cy.get('[class="nav navbar-nav"]').contains(/Delete Account/i).click();
             // Ensure that the "Account Deleted!" text is visible on the page
             cy.contains(/Account Deleted!/i).should('be.visible');
@@ -370,11 +372,6 @@ describe('Product Managment', ()=>{
              //Verify success message 'Your order has been placed successfully!'
              cy.get('.container').find('p').invoke('text').should('contain', 'Congratulations! Your order has been confirmed!')
 
-             cy.get('[class="nav navbar-nav"]').contains(/Delete Account/i).click();
-            // Ensure that the "Account Deleted!" text is visible on the page
-            cy.contains(/Account Deleted!/i).should('be.visible');
-            cy.getDataQa('continue-button').click();
-
         })
 
     })
@@ -468,13 +465,7 @@ describe('Product Managment', ()=>{
 
             //Verify success message 'Your order has been placed successfully!'
             cy.get('.container').find('p').invoke('text').should('contain', 'Congratulations! Your order has been confirmed!')
-
-           cy.get('[class="nav navbar-nav"]').contains(/Delete Account/i).click();
-               // // Ensure that the "Account Deleted!" text is visible on the page
-               cy.contains(/Account Deleted!/i).should('be.visible');
-               cy.getDataQa('continue-button').click();
-           });
-           
+        })
     })
 
     it('Remove Products From Cart',()=>{
@@ -654,4 +645,22 @@ describe('Product Managment', ()=>{
           });
           
     })
+
+    it('Delete user', ()=>{
+        // Navigate to the login page
+        cy.get('[class="nav navbar-nav"]').contains(/Login/i).click();
+        cy.contains(/Login to your account/i).should('be.visible')
+
+        //Login with correct details
+        cy.getDataQa('login-email').type(email)
+        cy.getDataQa('login-password').type(password)
+        cy.getDataQa('login-button').click();
+        
+        //Delete the account
+        cy.get('[class="nav navbar-nav"]').contains(/Delete Account/i).click();
+        // Ensure that the "Account Deleted!" text is visible on the page
+        cy.contains(/Account Deleted!/i).should('be.visible');
+        cy.getDataQa('continue-button').click();
+       
+   })
 })

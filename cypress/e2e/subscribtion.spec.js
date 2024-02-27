@@ -6,7 +6,7 @@ describe('Verify subscription', ()=>{
     })
 
     it('Verify subscription in home page',()=>{
-        
+
         //Scroll into footer view
         cy.get('footer').scrollIntoView();
 
@@ -41,9 +41,11 @@ describe('Verify subscription', ()=>{
         cy.contains(/You have been successfully subscribed!/i).should('be.visible')
     })
 
-    it.only('Verify Test cases page', ()=>{
+    it('Verify Test cases page', ()=>{
+
+        //Verify test case page
         cy.get('.test_cases_list').eq(0).find('button').click();
         cy.location('pathname').should('equal', '/test_cases')
     })
-    
+
 })

@@ -8,7 +8,7 @@ describe('User Registration and Account Management', () => {
         cy.location('pathname').should('equal', '/');
     })
 
-    it.only('Registers a new user, logs in, deletes the account', () => {
+    it('Registers a new user', () => {
         // Load user details from a JSON fixture file
         cy.fixture('userDetails.json').then((userDetails) => {
         
@@ -59,10 +59,6 @@ describe('User Registration and Account Management', () => {
             // Verify that the correct user has been logged in
             cy.contains(`Logged in as ${userDetails.username}`)
 
-            // cy.get('[class="nav navbar-nav"]').contains(/Delete Account/i).click();
-            // // Ensure that the "Account Deleted!" text is visible on the page
-            // cy.contains(/Account Deleted!/i).should('be.visible');
-            // cy.getDataQa('continue-button').click();
         });
     });
 
@@ -81,10 +77,6 @@ describe('User Registration and Account Management', () => {
         //Ensure that you are logged in with the correct details and its visible
         cy.contains(`Logged in as ${userDetails.username}`).should('be.visible')
         
-        cy.get('[class="nav navbar-nav"]').contains(/Delete Account/i).click();
-            // // Ensure that the "Account Deleted!" text is visible on the page
-            cy.contains(/Account Deleted!/i).should('be.visible');
-            cy.getDataQa('continue-button').click();
         });
     })
 
@@ -106,7 +98,6 @@ describe('User Registration and Account Management', () => {
     it('Logout user', ()=>{
 
         // Navigate to the login page
-        cy.fixture('userDetails.json').then((userDetails)=>{
         cy.get('[class="nav navbar-nav"]').contains(/Login/i).click();
         cy.contains(/Login to your account/i).should('be.visible')
 
@@ -114,14 +105,10 @@ describe('User Registration and Account Management', () => {
         cy.getDataQa('login-email').type(email)
         cy.getDataQa('login-password').type(password)
         cy.getDataQa('login-button').click();
-
-        //Ensure that you are logged in with the correct details and its visible
-        cy.contains(`Logged in as ${userDetails.username}`).should('be.visible')
         
         //Logout from the website
         cy.get('[class="nav navbar-nav"]').contains(/Logout/i).click();
         cy.location('pathname').should('equal', '/login')
-        })
     })
 
     it('Register with already existing email',()=>{
@@ -155,7 +142,7 @@ describe('User Registration and Account Management', () => {
             cy.getDataQa('message').type(userDetails.message)
 
             //Uploading a file thats located in the fixture folder
-            cy.get('[name="upload_file"]').attachFile('Bazat e robotikës T2V.docx');
+            cy.get('[name="upload_file"]').attachFile('randomDoc.pages');
 
             //Submitting the informations
             cy.getDataQa('submit-button').click();
@@ -171,8 +158,22 @@ describe('User Registration and Account Management', () => {
         })
     })
 
-    // it('Verify tese case page', ()=>{
-    //     cy.get('[class="test_cases_list"]').find('button').contains(/Test cases/i).click();
-    //     cy.location('pathname').should('equal', '/test_cases')
-    // })
+    it('Delete user', ()=>{
+        // Navigate to the login page
+        cy.get('[class="nav navbar-nav"]').contains(/Login/i).click();
+        cy.contains(/Login to your account/i).should('be.visible')
+
+        //Login with correct details
+        cy.getDataQa('login-email').type(email)
+        cy.getDataQa('login-password').type(password)
+        cy.getDataQa('login-button').click();
+        
+        //Delete the account
+        cy.get('[class="nav navbar-nav"]').contains(/Delete Account/i).click();
+        // Ensure that the "Account Deleted!" text is visible on the page
+        cy.contains(/Account Deleted!/i).should('be.visible');
+        cy.getDataQa('continue-button').click();
+       
+   })
+
 })
