@@ -66,14 +66,18 @@ describe('Product Managment', ()=>{
     })
 
     it('Verify product quantity in cart',()=>{
+
+        //Add a product
         cy.get('[class="nav nav-pills nav-justified"]').eq(0).find('a').click();
         cy.location('pathname').should('equal', '/product_details/1')
 
+        //Change quantity of a product
         cy.get('.product-information').find('span').then((product=>{
             cy.wrap(product).find('input').eq(0).clear().type('4')
             cy.wrap(product).find('button').click();
         }))
 
+        //Verify the changed quantity
         cy.get('.modal-content').find('a').click();
         cy.get('#product-1').find('td').then((firstProduct)=>{
             cy.wrap(firstProduct).eq(3).find('button').invoke('text').should('contain', '4')
@@ -82,9 +86,10 @@ describe('Product Managment', ()=>{
     
     it('Place order: Register while checkout',()=>{
 
+        // Load user details from a JSON fixture file
         cy.fixture('userDetails.json').then((userDetails=>{
 
-            //Navigate to products page
+            // Navigate to the signup page
             cy.get('[class="nav navbar-nav"]').find('li').contains(/Products/i).click();
     
             //Add first product
@@ -219,6 +224,7 @@ describe('Product Managment', ()=>{
     })
 
     it('Place order: Register before checkout',()=>{
+       
         // Load user details from a JSON fixture file
         cy.fixture('userDetails.json').then((userDetails) => {
         
@@ -352,6 +358,7 @@ describe('Product Managment', ()=>{
     })
 
     it('Place Order: Login before Checkout', ()=>{
+
         // Navigate to the signup page
         cy.fixture('userDetails.json').then((userDetails)=>{
            cy.get('[class="nav navbar-nav"]').contains(/Login/i).click();
@@ -449,6 +456,7 @@ describe('Product Managment', ()=>{
     })
 
     it('Remove Products From Cart',()=>{
+
         //Navigate to products page
         cy.get('[class="nav navbar-nav"]').find('li').contains(/Products/i).click();
 
@@ -517,7 +525,7 @@ describe('Product Managment', ()=>{
         cy.contains(/MEN - TSHIRTS PRODUCTS/i).should('be.visible')
     })
 
-    it.only('View & Cart Brand Products',()=>{
+    it('View & Cart Brand Products',()=>{
         cy.get('[class="nav navbar-nav"]').contains(/products/i).click();
 
          //Verify that the brands is visible
@@ -537,6 +545,47 @@ describe('Product Managment', ()=>{
          cy.location('pathname').should('equal', '/brand_products/H&M')
          cy.contains(/BRAND - H&M PRODUCTS/i).should('be.visible')
 
+    })
+
+    it('Search Products and Verify Cart After Login', ()=>{
+
+        //Navigate to products page
+        cy.get('[class="nav navbar-nav"]').contains(/products/i).click();
+        cy.location('pathname').should('equal', '/products')
+
+        //Search for tshirt product
+        cy.get('#search_product').type('tshirt')
+        cy.get('#submit_search').click();
+
+        //Verify the length of products
+        cy.contains(/SEARCHED PRODUCTS/i).should('be.visible')
+        cy.get('.features_items').find('.single-products').should('have.length', 6)
+
+        //Add all matching products and go to checkout
+        cy.get('.overlay-content').each(product => {
+            cy.wrap(product).find('a').click({ force: true });
+            cy.get('.modal-footer').find('button').click();
+        });
+        cy.get('.modal-body').find('a').click({ force: true });
+
+
+         // Navigate to the login page
+         cy.fixture('userDetails.json').then((userDetails)=>{
+            cy.get('[class="nav navbar-nav"]').contains(/Login/i).click();
+            cy.contains(/Login to your account/i).should('be.visible')
+    
+            //Login with correct details
+            cy.getDataQa('login-email').type(email)
+            cy.getDataQa('login-password').type(password)
+            cy.getDataQa('login-button').click();
+    
+            //Ensure that you are logged in with the correct details and its visible
+            cy.contains(`Logged in as ${userDetails.username}`).should('be.visible')
+         })
+
+         //Navigate to cart page and verify the length
+         cy.get('[class="nav navbar-nav"]').contains(/cart/i).click();
+         cy.get('tbody tr').should('have.length', 6)
     })
 
 })

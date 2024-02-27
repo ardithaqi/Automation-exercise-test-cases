@@ -8,7 +8,7 @@ describe('User Registration and Account Management', () => {
         cy.location('pathname').should('equal', '/');
     })
 
-    it('Registers a new user, logs in, deletes the account', () => {
+    it.only('Registers a new user, logs in, deletes the account', () => {
         // Load user details from a JSON fixture file
         cy.fixture('userDetails.json').then((userDetails) => {
         
@@ -68,7 +68,7 @@ describe('User Registration and Account Management', () => {
 
     it('Login user with correct email and password', ()=>{
 
-        // Navigate to the signup page
+        // Navigate to the login page
         cy.fixture('userDetails.json').then((userDetails)=>{
         cy.get('[class="nav navbar-nav"]').contains(/Login/i).click();
         cy.contains(/Login to your account/i).should('be.visible')
