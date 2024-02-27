@@ -526,6 +526,8 @@ describe('Product Managment', ()=>{
     })
 
     it('View & Cart Brand Products',()=>{
+
+        //Navigate to products page
         cy.get('[class="nav navbar-nav"]').contains(/products/i).click();
 
          //Verify that the brands is visible
@@ -588,4 +590,46 @@ describe('Product Managment', ()=>{
          cy.get('tbody tr').should('have.length', 6)
     })
 
+    it('Add review on product', ()=>{
+
+        // Load user details from a JSON fixture file
+        cy.fixture('userDetails.json').then((userDetails=>{
+            //Navigate to products page
+            cy.get('[class="nav navbar-nav"]').contains(/products/i).click();
+            cy.location('pathname').should('equal', '/products')
+    
+            //Click on 'View Product' button
+            cy.get('.choose').eq(0).find('a').click();
+            cy.get('[class="nav nav-tabs"]').contains(/Write your review/i).should('be.visible')
+    
+            //Enter name, email and review
+            cy.get('#review-form').then((form=>{
+                cy.wrap(form).find('#name').type(userDetails.first_name)
+                cy.wrap(form).find('#email').type(email)
+                cy.wrap(form).find('#review').type(userDetails.review)
+                cy.wrap(form).find('button').click();
+            }))
+            
+            //Verify success message 'Thank you for your review.'
+            cy.get('#review-section').find('span').should('contain', 'Thank you for your review.')
+        }))
+    })
+
+    it.only('Add to cart from Recommended items', ()=>{
+
+        //Scroll to the bottom of the page
+        cy.scrollTo('bottom');
+        cy.contains(/RECOMMENDED ITEMS/i).should('be.visible')
+
+        //Go to recommended items and add a product to the cart
+        cy.get('.recommended_items').find('.single-products').eq(0).find('a').click({force:true});
+        cy.get('.modal-body').find('a').click();
+        
+        //Verify the product was added
+        cy.get('tbody tr').find('td').eq(1).should((productName) => {
+            const text = productName.text();
+            expect(text.includes('Stylish Dress') || text.includes('Blue Top')).to.be.true;
+          });
+          
+    })
 })
